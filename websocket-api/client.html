@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script>
+        // 当页面被load时执行事件
+        window.addEventListener("load", function (evt) {
+            // 获取输入框input、响应结果展示div output
+            var input = document.getElementById("input");
+            var output = document.getElementById("output");
+            // 声明变量ws
+            var ws;
+            // 打印方法
+            var print = function (message) {
+                var div = document.createElement("div");
+                div.innerHTML = message;
+                output.appendChild(div);
+            };
+            // 和服务器建立连接
+            document.getElementById("open").onclick = function (evt) {
+                // 如果ws对象存在，则不进行创建（避免多次点击open，导致多次建立连接）
+                if (ws) {
+                    return false;
+                }
+                // 建立ws连接，注意不能只写ws://localhost:7777，后面还有一个 /ws 呢
+                ws = new WebSocket("ws://localhost:7777/ws");
+                // ws的4个事件
+                ws.onopen = function (evt) {
+                    print("OPEN");
+                };
+                ws.onclose = function (evt) {
+                    print("CLOSE");
+                    ws = null;
+                };
+                ws.onmessage = function (evt) {
+                    print("RESPONSE: " + evt.data);
+                };
+                ws.onerror = function (evt) {
+                    print("ERROR: " + evt.data);
+                };
+                // 中断监听事件
+                return false;
+            };
+            // 发送按钮
+            document.getElementById("send").onclick = function (evt) {
+                // 如果ws对象不存在，直接返回
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input.value);
+                ws.send(input.value);
+                return false;
+            };
+            // 关闭按钮
+            document.getElementById("close").onclick = function (evt) {
+                // 如果ws对象不存在，直接返回
+                if (!ws) {
+                    return false;
+                }
+                ws.close();
+                return false;
+            };
+        });
+    </script>
+    <title>WebSocketDemo</title>
+</head>
+
+<body>
+    <!-- 表格，1 行 2 列，各占 50%宽度 -->
+    <table>
+        <tr>
+            <!-- valign="top"位置始终垂直置顶 -->
+            <td valign="top" width="50%">
+                <p>
+                    Click "Open" to create a connection to the server,
+                    <br />
+                    Click "Send" to send a message to the server,
+                    <br />
+                    Click "Close" to close the connection.
+                    <br />
+                    You can change the message and send multiple times.
+                </p>
+                <form>
+                    <button id="open">Open</button>
+                    <button id="close">Close</button>
+                    <input id="input" type="text" value="Hello world!">
+                    <button id="send">Send</button>
+                </form>
+            </tdvalign="top">
+            <td valign="top" width="50%">
+                <div id="output"></div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
