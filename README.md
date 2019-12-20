@@ -16,3 +16,11 @@
 
 
 1h，让你过一把架构师的瘾
+
+最后又加了一个文件夹websocket-gobwas
+
+它是通过 [How to Use Websockets in Golang : Best Tools and Step-by-Step Guide](https://yalantis.com/blog/how-to-build-websockets-in-go/#) 的推荐
+
+得知还有[gobwas](https://github.com/gobwas/ws)这种优雅的开源库
+
+于是，一起加入到此仓库中
